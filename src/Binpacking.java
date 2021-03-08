@@ -40,7 +40,6 @@ public class Binpacking {
             }
             int min_bin = 1 + (total_data / this.bin_size);
             System.out.println("Nombre minimal de bin : " + min_bin);
-            System.out.println("Test ");
         } catch (IOException e) {
             e.printStackTrace();
         }
