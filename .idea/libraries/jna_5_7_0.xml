@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="jna-5.7.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../lib/ortools/jna-5.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lib/ortools/jna-platform-5.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lib/ortools/ortools-8.2.8710.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lib/ortools/ortools-win32-8.2.8710.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../lib/ortools/protobuf-3.15.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
