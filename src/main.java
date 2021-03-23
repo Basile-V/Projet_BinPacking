@@ -2,7 +2,8 @@ public class main {
     public static void main(String[] args)throws Exception
     {
         Binpacking bp = new Binpacking("files/file1.txt");
-        bp.firstFitDecreasing();
-        bp.OneItemPerBin();
+        //bp.firstFitDecreasing(1);
+        //bp.OneItemPerBin();
+        bp.random();
     }
 }

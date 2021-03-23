@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Binpacking {
     int[] data;
@@ -49,12 +50,13 @@ public class Binpacking {
         }
     }
 
-    public void firstFitDecreasing(){
+    public void firstFitDecreasing(int order){
         clearBins();
-        int[] data = new int[this.data.length];
-        for(var i = this.data.length-1; i >=0; i--)
-            data[i] = this.data[i];
-        Arrays.sort(data);
+        if (order == 1)
+            data = decreasing();
+        if (order == 2)
+            data = decreasing();
+
         for(var i = data.length-1; i >=0; i--) {
             boolean ajout = false;
             System.out.println("");
@@ -114,6 +116,33 @@ public class Binpacking {
     public void clearBins() {
         this.bins = new Bin[this.nb_item];
         this.nb_bin = 0;
+    }
+
+    public int[] decreasing() {
+        int[] data = new int[this.data.length];
+        for(var i = this.data.length-1; i >=0; i--)
+            data[i] = this.data[i];
+
+        Arrays.sort(data);
+        return data;
+    }
+
+    public int[] random() {
+        int[] data = new int[this.data.length];
+        int[] added = new int[this.data.length];
+        Random r = new Random();
+        int random = r.nextInt(this.data.length);
+        for(var i = this.data.length-1; i >=0; i--) {
+            while ((Arrays.asList(added).contains(random))) {
+                Random ra = new Random();
+                random = ra.nextInt(this.data.length);
+            }
+            data[i] = this.data[random];
+            added[i] = random;
+        }
+        for(var i = this.data.length-1; i >=0; i--)
+            System.out.println(data[i]);
+        return data;
     }
 
 }
