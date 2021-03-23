@@ -3,5 +3,6 @@ public class main {
     {
         Binpacking bp = new Binpacking("files/file1.txt");
         bp.firstFitDecreasing();
+        bp.OneItemPerBin();
     }
 }

@@ -25,6 +25,7 @@ public class Binpacking {
                     String[] header = line.split(" ");
                     this.bin_size = Integer.parseInt(header[0]);
                     this.nb_item = Integer.parseInt(header[1]);
+                    this.nb_bin = 0;
                     this.bins = new Bin[this.nb_item];
                     this.data = new int[this.nb_item];
                 } else {
@@ -49,18 +50,22 @@ public class Binpacking {
     }
 
     public void firstFitDecreasing(){
-        Arrays.sort(this.data);
-        for(var i = this.data.length-1; i >=0; i--) {
+        clearBins();
+        int[] data = new int[this.data.length];
+        for(var i = this.data.length-1; i >=0; i--)
+            data[i] = this.data[i];
+        Arrays.sort(data);
+        for(var i = data.length-1; i >=0; i--) {
             boolean ajout = false;
             System.out.println("");
-            System.out.println("i : " + (this.data.length-1-i));
-            System.out.println("Nouvel objet de taille " + this.data[i]);
+            System.out.println("i : " + (data.length-1-i));
+            System.out.println("Nouvel objet de taille " + data[i]);
             if (this.nb_bin == 0)
                 addBin();;
             for (int j = 0; j < nb_bin; j++)  {
                 System.out.println("");
-                System.out.println("Bin " + j);
-                if (!this.bins[j].addObject(this.data[i]))
+                System.out.println("Bin " + (j+1));
+                if (!this.bins[j].addObject(data[i]))
                     System.out.println("Impossible de l'ajouter");
                 else {
                     ajout = true;
@@ -69,14 +74,33 @@ public class Binpacking {
             }
             if (!ajout){
                 addBin();
-                this.bins[this.nb_bin-1].addObject(this.data[i]);
+                this.bins[this.nb_bin-1].addObject(data[i]);
             }
         }
         System.out.println("");
         System.out.println("Nombre total de bin : " + this.nb_bin);
         for (int i = 0; i < this.nb_bin; i++) {
             System.out.println("");
-            System.out.println("Bin " + i + " :");
+            System.out.println("Bin " + (i+1) + " :");
+            for (int j = 0; j < this.bins[i].nb_object; j++)
+                System.out.println(this.bins[i].objects[j]);
+        }
+    }
+
+    public void OneItemPerBin() {
+        clearBins();
+        for (var i = 0; i < this.data.length ; i++) {
+            System.out.println("");
+            System.out.println("i : " + i);
+            System.out.println("Nouvel objet de taille " + this.data[i]);
+            addBin();
+            this.bins[i].addObject(this.data[i]);
+        }
+        System.out.println("");
+        System.out.println("Nombre total de bin : " + this.nb_bin);
+        for (int i = 0; i < this.nb_bin; i++) {
+            System.out.println("");
+            System.out.println("Bin " + (i + 1) + " :");
             for (int j = 0; j < this.bins[i].nb_object; j++)
                 System.out.println(this.bins[i].objects[j]);
         }
@@ -85,6 +109,11 @@ public class Binpacking {
     public void addBin() {
         this.bins[nb_bin] = new Bin(this.bin_size);
         this.nb_bin += 1;
+    }
+
+    public void clearBins() {
+        this.bins = new Bin[this.nb_item];
+        this.nb_bin = 0;
     }
 
 }
