@@ -34,4 +34,24 @@ public class Bin {
         } else
             return false;
     }
+
+    public boolean removeObject(int number) {
+        if (this.verbose)
+            System.out.println("Suppression de l'objet");
+        if (this.nb_object >= number) {
+            int removedObject = this.objects[number];
+            for (int i = number; i < nb_object; i++)
+                this.objects[i] = this.objects[i+1];
+            this.nb_object -= 1;
+            if (this.verbose)
+                System.out.println("Nombre d'objets :" + this.nb_object);
+            this.remaining_space += removedObject;
+            if (this.verbose)
+                System.out.println("Espace restant :" + this.remaining_space);
+            if (this.remaining_space > 0)
+                this.isFull = false;
+            return true;
+        } else
+            return false;
+    }
 }

@@ -88,12 +88,7 @@ public class Binpacking {
         System.out.println("");
         System.out.println("Nombre total de bin : " + this.nb_bin);
         if (this.verbose)
-            for (int i = 0; i < this.nb_bin; i++) {
-                System.out.println("");
-                System.out.println("Bin " + (i+1) + " :");
-                for (int j = 0; j < this.bins[i].nb_object; j++)
-                    System.out.println(this.bins[i].objects[j]);
-            }
+            printBins();
     }
 
     public void OneItemPerBin() {
@@ -160,5 +155,115 @@ public class Binpacking {
         }
         return data;
     }
+
+    public boolean relocate(int sourceBin, int itemNumber, int destinationBin) {
+        if (this.bins[sourceBin].nb_object <= itemNumber) {
+            if (this.verbose) {
+                System.out.println("Il n'y a pas d'item " + itemNumber + " dans le bin " + sourceBin);
+                System.out.println("");
+            }
+            return false;
+        }
+        if (this.bins[destinationBin].remaining_space < this.bins[sourceBin].objects[itemNumber]) {
+            if (this.verbose) {
+                System.out.println("Il n'y a pas de place suffisante dans le bin " + destinationBin);
+                System.out.println("");
+            }
+            return false;
+        }
+        if (this.bins[destinationBin].addObject(this.bins[sourceBin].objects[itemNumber])) {
+            this.bins[sourceBin].removeObject(itemNumber);
+            clearEmptyBins();
+            return  true;
+        }
+
+        return  false;
+    }
+
+    public boolean exchange(int sourceBin, int sourceItemNumber, int destinationBin, int destinationItemNumber) {
+        if (this.bins[sourceBin].nb_object <= sourceItemNumber) {
+            if (this.verbose) {
+                System.out.println("Il n'y a pas d'item " + sourceItemNumber + " dans le bin " + sourceBin);
+                System.out.println("");
+            }
+            return false;
+        }
+        if (this.bins[destinationBin].nb_object <= destinationItemNumber) {
+            if (this.verbose) {
+                System.out.println("Il n'y a pas d'item " + destinationItemNumber + " dans le bin " + destinationBin);
+                System.out.println("");
+            }
+            return false;
+        }
+        if (this.bins[destinationBin].remaining_space + this.bins[destinationBin].objects[destinationItemNumber] < this.bins[sourceBin].objects[sourceItemNumber]) {
+            if (this.verbose) {
+                System.out.println("Il n'y a pas de place suffisante dans le bin " + destinationBin);
+                System.out.println("");
+            }
+            return false;
+        }
+        if (this.bins[sourceBin].remaining_space + this.bins[sourceBin].objects[sourceItemNumber] < this.bins[destinationBin].objects[destinationItemNumber]) {
+            if (this.verbose) {
+                System.out.println("Il n'y a pas de place suffisante dans le bin " + destinationBin);
+                System.out.println("");
+            }
+            return false;
+        }
+        int size = this.bins[destinationBin].objects[destinationItemNumber];
+        this.bins[destinationBin].removeObject(destinationItemNumber);
+        this.bins[destinationBin].addObject(this.bins[sourceBin].objects[sourceItemNumber]);
+        this.bins[sourceBin].removeObject(sourceItemNumber);
+        this.bins[sourceBin].addObject(size);
+        return  true;
+    }
+
+    public void printBins() {
+        for (int i = 0; i < this.nb_bin; i++) {
+            System.out.println("");
+            System.out.println("Bin " + (i+1) + " :");
+            for (int j = 0; j < this.bins[i].nb_object; j++)
+                System.out.println(this.bins[i].objects[j]);
+        }
+    }
+
+    public void clearEmptyBins() {
+        for (int i = 0; i < this.nb_bin; i++) {
+            if (this.bins[i].nb_object == 0) {
+                this.nb_bin -= 1;
+                for (int j = i; j < this.nb_bin; j++)
+                    this.bins[j] = this.bins[j+1];
+
+            }
+        }
+    }
+
+    public void relocateLoop(int times) {
+        for (int i = 0; i < times; i++) {
+            Random random = new Random();
+            int source = random.nextInt(this.nb_bin);
+            random = new Random();
+            int destination = random.nextInt(this.nb_bin);
+            random = new Random();
+            int itemNumber = random.nextInt(this.bins[source].nb_object);
+            if (!relocate(source, itemNumber, destination) & this.verbose)
+                System.out.println("Echec de la relocation numéro "+ i);
+        }
+    }
+
+    public void exchangeLoop(int times) {
+        for (int i = 0; i < times; i++) {
+            Random random = new Random();
+            int source = random.nextInt(this.nb_bin);
+            random = new Random();
+            int destination = random.nextInt(this.nb_bin);
+            random = new Random();
+            int sourceItemNumber = random.nextInt(this.bins[source].nb_object);
+            random = new Random();
+            int destinationItemNumber = random.nextInt(this.bins[destination].nb_object);
+            if (!exchange(source, sourceItemNumber, destination, destinationItemNumber) & this.verbose)
+                System.out.println("Echec de l'échange numéro "+ i);
+        }
+    }
+
 
 }
