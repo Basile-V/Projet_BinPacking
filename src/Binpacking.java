@@ -127,7 +127,6 @@ public class Binpacking {
         this.bins = bestBin;
     }
 
-
     public void OneItemPerBin() {
         clearBins();
         for (var i = 0; i < this.data.length ; i++) {
@@ -208,18 +207,13 @@ public class Binpacking {
             }
             return false;
         }
-        int oldValue = objectiveFunction();
         if (this.bins[destinationBin].addObject(this.bins[sourceBin].objects[itemNumber])) {
             this.bins[sourceBin].removeObject(itemNumber);
-            int newValue = objectiveFunction();
-            if (newValue<oldValue) {
-                relocate(destinationBin, this.bins[destinationBin].nb_object - 1, sourceBin);
-            }
             clearEmptyBins();
-            return  true;
+            return true;
         }
 
-        return  false;
+        return false;
     }
 
     public int objectiveFunction (){
@@ -234,6 +228,9 @@ public class Binpacking {
     }
 
     public boolean exchange(int sourceBin, int sourceItemNumber, int destinationBin, int destinationItemNumber) {
+        if (sourceBin == destinationBin) {
+            return false;
+        }
         if (this.bins[sourceBin].nb_object <= sourceItemNumber) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas d'item " + sourceItemNumber + " dans le bin " + sourceBin);
@@ -262,16 +259,12 @@ public class Binpacking {
             }
             return false;
         }
-        int oldValue = objectiveFunction();
         int size = this.bins[destinationBin].objects[destinationItemNumber];
         this.bins[destinationBin].removeObject(destinationItemNumber);
         this.bins[destinationBin].addObject(this.bins[sourceBin].objects[sourceItemNumber]);
         this.bins[sourceBin].removeObject(sourceItemNumber);
         this.bins[sourceBin].addObject(size);
         int newValue = objectiveFunction();
-        if (newValue<oldValue) {
-            exchange(sourceBin, this.bins[sourceBin].nb_object-1, destinationBin, this.bins[destinationBin].nb_object-1);
-        }
         return  true;
     }
 

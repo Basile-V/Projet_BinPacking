@@ -6,7 +6,7 @@ public class main {
         //bp.firstFit(2);
         bp.OneItemPerBin();
         //bp.printBins();
-        bp.RecuitSimule(100.00, 50, 48, 0.85);
+        bp.RecuitSimule(500.00, 100, 100, 0.95);
         System.out.println("nbbins = " + bp.nb_bin);
         bp.printBins();
     }
