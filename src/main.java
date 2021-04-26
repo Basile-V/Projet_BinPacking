@@ -6,15 +6,8 @@ public class main {
         //bp.firstFit(2);
         bp.OneItemPerBin();
         //bp.printBins();
-        bp.relocateLoop(100);
-        bp.exchangeLoop(100);
-        bp.relocateLoop(100);
-        bp.exchangeLoop(100);
-        bp.relocateLoop(100);
-        bp.exchangeLoop(100);
-        bp.relocateLoop(100);
-        bp.exchangeLoop(100);
+        bp.RecuitSimule(100.00, 50, 48, 0.85);
         System.out.println("nbbins = " + bp.nb_bin);
-        //bp.printBins();
+        bp.printBins();
     }
 }

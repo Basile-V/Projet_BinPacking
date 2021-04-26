@@ -91,6 +91,43 @@ public class Binpacking {
             printBins();
     }
 
+    public void RecuitSimule(double initTemp, int n1, int n2, double mu){
+        float p;
+        double tk = initTemp;
+        int delta;
+        int bestScore = objectiveFunction();
+        Bin[] lastSave;
+        Bin[] bestBin = this.cloneBins();
+        for (int k = 0; k < n1; k++){
+            for(int l = 1; l < n2; l++){
+                lastSave = this.cloneBins();
+                int lastScore = objectiveFunction();
+                Random random = new Random();
+                int choice = random.nextInt(2);
+                if(choice == 0){
+                    this.relocateLoop();
+                }else {
+                    this.exchangeLoop();
+                }
+                int newScore = objectiveFunction();
+                delta = newScore - lastScore;
+                if(bestScore <= newScore){
+                    bestScore = newScore;
+                    bestBin = this.cloneBins();
+                }
+                else if(newScore < lastScore){
+                    p = random.nextFloat();
+                    if(p > Math.exp(-delta / tk)){
+                        this.bins = lastSave;
+                    }
+                }
+            }
+            tk = mu * tk;
+        }
+        this.bins = bestBin;
+    }
+
+
     public void OneItemPerBin() {
         clearBins();
         for (var i = 0; i < this.data.length ; i++) {
@@ -239,12 +276,24 @@ public class Binpacking {
     }
 
     public void printBins() {
+        int somme = 0;
         for (int i = 0; i < this.nb_bin; i++) {
             System.out.println("");
             System.out.println("Bin " + (i+1) + " :");
-            for (int j = 0; j < this.bins[i].nb_object; j++)
+            for (int j = 0; j < this.bins[i].nb_object; j++){
                 System.out.println(this.bins[i].objects[j]);
+                somme++;
+            }
         }
+        System.out.println("Somme: " + somme);
+    }
+
+    public Bin[] cloneBins() {
+        Bin[] copy = new Bin[this.nb_bin];
+        for (int i = 0; i < this.nb_bin; i++) {
+            copy[i] = this.bins[i].clone();
+        }
+        return copy;
     }
 
     public void clearEmptyBins() {
@@ -271,6 +320,20 @@ public class Binpacking {
         }
     }
 
+    public void relocateLoop() {
+        boolean reloc = false;
+        while (!reloc) {
+            Random random = new Random();
+            int source = random.nextInt(this.nb_bin);
+            random = new Random();
+            int destination = random.nextInt(this.nb_bin);
+            random = new Random();
+            int itemNumber = random.nextInt(this.bins[source].nb_object);
+            if (relocate(source, itemNumber, destination))
+                reloc = true;
+        }
+    }
+
     public void exchangeLoop(int times) {
         for (int i = 0; i < times; i++) {
             Random random = new Random();
@@ -283,6 +346,22 @@ public class Binpacking {
             int destinationItemNumber = random.nextInt(this.bins[destination].nb_object);
             if (!exchange(source, sourceItemNumber, destination, destinationItemNumber) & this.verbose)
                 System.out.println("Echec de l'échange numéro "+ i);
+        }
+    }
+
+    public void exchangeLoop() {
+        boolean exchange = false;
+        while (!exchange) {
+            Random random = new Random();
+            int source = random.nextInt(this.nb_bin);
+            random = new Random();
+            int destination = random.nextInt(this.nb_bin);
+            random = new Random();
+            int sourceItemNumber = random.nextInt(this.bins[source].nb_object);
+            random = new Random();
+            int destinationItemNumber = random.nextInt(this.bins[destination].nb_object);
+            if (exchange(source, sourceItemNumber, destination, destinationItemNumber))
+                exchange = true;
         }
     }
 

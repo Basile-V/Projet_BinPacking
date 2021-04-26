@@ -1,4 +1,4 @@
-public class Bin {
+public class Bin implements Cloneable {
     int bin_size;
     int[] objects;
     int remaining_space;
@@ -53,5 +53,17 @@ public class Bin {
             return true;
         } else
             return false;
+    }
+
+    public Bin clone(){
+        Bin bin = null;
+        try {
+            bin = (Bin) super.clone();
+        }catch(CloneNotSupportedException cnse) {
+            // Ne devrait jamais arriver, car nous implémentons
+            // l'interface Cloneable
+            cnse.printStackTrace(System.err);
+        }
+        return bin;
     }
 }
