@@ -171,13 +171,29 @@ public class Binpacking {
             }
             return false;
         }
+        int oldValue = objectiveFunction();
         if (this.bins[destinationBin].addObject(this.bins[sourceBin].objects[itemNumber])) {
             this.bins[sourceBin].removeObject(itemNumber);
+            int newValue = objectiveFunction();
+            if (newValue<oldValue) {
+                relocate(destinationBin, this.bins[destinationBin].nb_object - 1, sourceBin);
+            }
             clearEmptyBins();
             return  true;
         }
 
         return  false;
+    }
+
+    public int objectiveFunction (){
+        int sum = 0;
+        for (int i = 0; i < this.nb_bin; i++) {
+            int square = 0;
+            for (int j = 0; j < this.bins[i].nb_object; j++)
+                square += this.bins[i].objects[j];
+            sum += Math.pow(square,2);
+        }
+        return sum;
     }
 
     public boolean exchange(int sourceBin, int sourceItemNumber, int destinationBin, int destinationItemNumber) {
@@ -209,11 +225,16 @@ public class Binpacking {
             }
             return false;
         }
+        int oldValue = objectiveFunction();
         int size = this.bins[destinationBin].objects[destinationItemNumber];
         this.bins[destinationBin].removeObject(destinationItemNumber);
         this.bins[destinationBin].addObject(this.bins[sourceBin].objects[sourceItemNumber]);
         this.bins[sourceBin].removeObject(sourceItemNumber);
         this.bins[sourceBin].addObject(size);
+        int newValue = objectiveFunction();
+        if (newValue<oldValue) {
+            exchange(sourceBin, this.bins[sourceBin].nb_object-1, destinationBin, this.bins[destinationBin].nb_object-1);
+        }
         return  true;
     }
 
