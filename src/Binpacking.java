@@ -92,6 +92,7 @@ public class Binpacking {
     }
 
     public void RecuitSimule(double initTemp, int n1, int n2, double mu){
+        //clearBins();
         float p;
         double tk = initTemp;
         int delta;
@@ -127,6 +128,73 @@ public class Binpacking {
         this.bins = bestBin;
     }
 
+    public void TabuSearch(int tabuSize, int nbIter){
+        int bestScore = objectiveFunction();
+        int currentScore = objectiveFunction();
+        Bin[] bestBin = this.cloneBins();
+        Bin[] currentX = this.cloneBins();
+        int[] lastChange = {-1,-1,-1,-1};
+        int[][] T = new int[tabuSize][4];
+        for (int i = 0; i < nbIter; i++) {
+            //RECHERCHE DE TOUS LES VOISINS
+            int bestVoisinScore = 0;
+            Bin[] bestVoisinBin = this.cloneBins();
+            for (int j = 0; j < nb_bin - 1; j++) {
+                for (int k = j + 1; k < nb_bin; k++) {
+                    for (int l = 0; l < bins[j].nb_object; l++) {
+                        boolean acceptable = acceptable(T, j, k, -1);
+                        if (!acceptable) {
+                            continue;
+                        }
+                        this.bins = currentX;
+                        if (relocate(j, l, k)) {
+                            int newScore = objectiveFunction();
+                            if (bestVoisinScore <= newScore) {
+                                bestVoisinScore = newScore;
+                                bestVoisinBin = this.cloneBins();
+                                lastChange[0] = j;
+                                lastChange[1] = l;
+                                lastChange[2] = k;
+                                lastChange[3] = -1;
+                            }
+                        }
+                        for (int m = 0; m < bins[k].nb_object; m++) {
+                            acceptable = acceptable(T, j, k, -1);
+                            if (!acceptable) {
+                                continue;
+                            }
+
+                            this.bins = currentX;
+                            if (exchange(j, l, k, m)) {
+                                int newScore = objectiveFunction();
+                                if (bestVoisinScore <= newScore) {
+                                    bestVoisinScore = newScore;
+                                    bestVoisinBin = this.cloneBins();
+                                    lastChange[0] = j;
+                                    lastChange[1] = l;
+                                    lastChange[2] = k;
+                                    lastChange[3] = m;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            currentX = bestVoisinBin;
+            if (bestVoisinScore < currentScore) {
+                for (int j = 0; j < T.length - 1; j++) {
+                    T[j] = T[j + 1];
+                }
+                T[T.length - 1] = lastChange;
+            }
+            if (bestVoisinScore > bestScore) {
+                bestScore = bestVoisinScore;
+                bestBin = bestVoisinBin;
+            }
+        }
+        this.bins = bestBin;
+    }
+
     public void OneItemPerBin() {
         clearBins();
         for (var i = 0; i < this.data.length ; i++) {
@@ -147,6 +215,18 @@ public class Binpacking {
                 for (int j = 0; j < this.bins[i].nb_object; j++)
                     System.out.println(this.bins[i].objects[j]);
             }
+    }
+
+    public boolean acceptable(int[][] T, int j, int k, int m) {
+        int [] aled = {k, bins[k].nb_object, j, bins[j].nb_object};
+        if (m == -1)
+            aled[3] = -1;
+        for (int tabu = 0; tabu < T.length; tabu++) {
+            if (T[tabu] == aled) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void addBin() {
