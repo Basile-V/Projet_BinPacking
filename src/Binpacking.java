@@ -92,7 +92,6 @@ public class Binpacking {
     }
 
     public void RecuitSimule(double initTemp, int n1, int n2, double mu){
-        //clearBins();
         float p;
         double tk = initTemp;
         int delta;
@@ -140,7 +139,7 @@ public class Binpacking {
             int bestVoisinScore = 0;
             Bin[] bestVoisinBin = this.cloneBins();
             for (int j = 0; j < nb_bin - 1; j++) {
-                for (int k = j + 1; k < nb_bin; k++) {
+                for (int k = 0; k < nb_bin; k++) {
                     for (int l = 0; l < bins[j].nb_object; l++) {
                         boolean acceptable = acceptable(T, j, k, -1);
                         if (!acceptable) {
@@ -152,14 +151,14 @@ public class Binpacking {
                             if (bestVoisinScore <= newScore) {
                                 bestVoisinScore = newScore;
                                 bestVoisinBin = this.cloneBins();
-                                lastChange[0] = j;
-                                lastChange[1] = l;
-                                lastChange[2] = k;
+                                lastChange[0] = k;
+                                lastChange[1] = bins[k].nb_object;
+                                lastChange[2] = j;
                                 lastChange[3] = -1;
                             }
                         }
                         for (int m = 0; m < bins[k].nb_object; m++) {
-                            acceptable = acceptable(T, j, k, -1);
+                            acceptable = acceptable(T, j, k, m);
                             if (!acceptable) {
                                 continue;
                             }
@@ -170,10 +169,10 @@ public class Binpacking {
                                 if (bestVoisinScore <= newScore) {
                                     bestVoisinScore = newScore;
                                     bestVoisinBin = this.cloneBins();
-                                    lastChange[0] = j;
-                                    lastChange[1] = l;
-                                    lastChange[2] = k;
-                                    lastChange[3] = m;
+                                    lastChange[0] = k;
+                                    lastChange[1] = bins[k].nb_object;
+                                    lastChange[2] = j;
+                                    lastChange[3] = bins[j].nb_object;
                                 }
                             }
                         }
@@ -364,7 +363,11 @@ public class Binpacking {
     public Bin[] cloneBins() {
         Bin[] copy = new Bin[this.nb_bin];
         for (int i = 0; i < this.nb_bin; i++) {
-            copy[i] = this.bins[i].clone();
+            Bin bin = new Bin(bin_size, verbose);
+            for (int j = 0; j < this.bins[i].nb_object; j++) {
+                bin.addObject(this.bins[i].objects[j]);
+            }
+            copy[i] = bin;
         }
         return copy;
     }
