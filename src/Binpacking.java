@@ -40,9 +40,11 @@ public class Binpacking {
             System.out.println("taille des bin : " + this.bin_size);
             System.out.println("nombre de bin : " + this.nb_bin);
             int total_data = 0;
-            for(int i=0; i < this.data.length; i++) {
+            for (int i = 0; i < this.data.length; i++) {
                 total_data += this.data[i];
-                System.out.println(this.data[i]);
+                if (verbose) {
+                    System.out.println(this.data[i]);
+                }
             }
             int min_bin = 1 + (total_data / this.bin_size);
             System.out.println("Nombre minimal de bin : " + min_bin);
@@ -85,8 +87,6 @@ public class Binpacking {
                 this.bins[this.nb_bin-1].addObject(data[i]);
             }
         }
-        System.out.println("");
-        System.out.println("Nombre total de bin : " + this.nb_bin);
         if (this.verbose)
             printBins();
     }
@@ -125,6 +125,9 @@ public class Binpacking {
             tk = mu * tk;
         }
         this.bins = bestBin;
+        if (this.verbose) {
+            printBins();
+        }
     }
 
     public void TabuSearch(int tabuSize, int nbIter){
@@ -138,14 +141,16 @@ public class Binpacking {
             //RECHERCHE DE TOUS LES VOISINS
             int bestVoisinScore = 0;
             Bin[] bestVoisinBin = this.cloneBins();
-            for (int j = 0; j < nb_bin - 1; j++) {
+            for (int j = 0; j < nb_bin; j++) {
                 for (int k = 0; k < nb_bin; k++) {
                     for (int l = 0; l < bins[j].nb_object; l++) {
                         boolean acceptable = acceptable(T, j, k, -1);
                         if (!acceptable) {
+                            System.out.println("PABIEN");
                             continue;
                         }
-                        this.bins = currentX;
+                        this.bins = cloneBins(currentX);
+                        this.nb_bin = this.bins.length;
                         if (relocate(j, l, k)) {
                             int newScore = objectiveFunction();
                             if (bestVoisinScore <= newScore) {
@@ -157,13 +162,17 @@ public class Binpacking {
                                 lastChange[3] = -1;
                             }
                         }
+                        this.bins = cloneBins(currentX);
+                        this.nb_bin = this.bins.length;
                         for (int m = 0; m < bins[k].nb_object; m++) {
                             acceptable = acceptable(T, j, k, m);
                             if (!acceptable) {
+                                System.out.println("mal");
                                 continue;
                             }
 
-                            this.bins = currentX;
+                            this.bins = cloneBins(currentX);
+                            this.nb_bin = this.bins.length;
                             if (exchange(j, l, k, m)) {
                                 int newScore = objectiveFunction();
                                 if (bestVoisinScore <= newScore) {
@@ -192,6 +201,10 @@ public class Binpacking {
             }
         }
         this.bins = bestBin;
+        this.nb_bin = bestBin.length;
+        if (this.verbose) {
+            printBins();
+        }
     }
 
     public void OneItemPerBin() {
@@ -205,15 +218,8 @@ public class Binpacking {
             addBin();
             this.bins[i].addObject(this.data[i]);
         }
-        System.out.println("");
-        System.out.println("Nombre total de bin : " + this.nb_bin);
         if (this.verbose)
-            for (int i = 0; i < this.nb_bin; i++) {
-                System.out.println("");
-                System.out.println("Bin " + (i + 1) + " :");
-                for (int j = 0; j < this.bins[i].nb_object; j++)
-                    System.out.println(this.bins[i].objects[j]);
-            }
+            printBins();
     }
 
     public boolean acceptable(int[][] T, int j, int k, int m) {
@@ -366,6 +372,18 @@ public class Binpacking {
             Bin bin = new Bin(bin_size, verbose);
             for (int j = 0; j < this.bins[i].nb_object; j++) {
                 bin.addObject(this.bins[i].objects[j]);
+            }
+            copy[i] = bin;
+        }
+        return copy;
+    }
+
+    public Bin[] cloneBins(Bin[] bins) {
+        Bin[] copy = new Bin[bins.length];
+        for (int i = 0; i < bins.length; i++) {
+            Bin bin = new Bin(bin_size, verbose);
+            for (int j = 0; j < bins[i].nb_object; j++) {
+                bin.addObject(bins[i].objects[j]);
             }
             copy[i] = bin;
         }

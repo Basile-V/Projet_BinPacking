@@ -54,16 +54,4 @@ public class Bin implements Cloneable {
         } else
             return false;
     }
-
-    public Bin clone(){
-        Bin bin = null;
-        try {
-            bin = (Bin) super.clone();
-        }catch(CloneNotSupportedException cnse) {
-            // Ne devrait jamais arriver, car nous implémentons
-            // l'interface Cloneable
-            cnse.printStackTrace(System.err);
-        }
-        return bin;
-    }
 }
