@@ -416,7 +416,9 @@ public class Binpacking {
 
     public void relocateLoop() {
         boolean reloc = false;
-        while (!reloc) {
+        int nbTry = 0;
+        while (!reloc && nbTry < 10000) {
+            nbTry++;
             Random random = new Random();
             int source = random.nextInt(this.nb_bin);
             random = new Random();
@@ -445,7 +447,9 @@ public class Binpacking {
 
     public void exchangeLoop() {
         boolean exchange = false;
-        while (!exchange) {
+        int nbTry = 0;
+        while (!exchange&& nbTry < 10000) {
+            nbTry++;
             Random random = new Random();
             int source = random.nextInt(this.nb_bin);
             random = new Random();
