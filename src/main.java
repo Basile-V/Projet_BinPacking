@@ -1,3 +1,9 @@
+import com.google.ortools.linearsolver.samples.BinPackingMip;
+
+import javax.swing.*;
+import java.lang.reflect.Array;
+import java.util.Scanner;
+
 public class main {
     public static void main(String[] args)
     {
@@ -7,12 +13,14 @@ public class main {
         int nbFirstFitRandom = 100;
         int nbRecuit = 100;
         int nbTabu = 10;
-        int TabuIter = 10;
-        Binpacking bp = new Binpacking("files/binpack1d_00.txt", false);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Veuillez saisir le nom du fichier avec l'extention:");
+        String fileName = "files/" +sc.nextLine();
+        Binpacking bp = new Binpacking(fileName, false);
         boolean verbose = false;
 
         //------------     First Fit Decreasing   ------------
-/*
+
         System.out.println("\nFirst Fit Decreasing");
         debut = System.currentTimeMillis();
         bp.firstFit(1);
@@ -60,37 +68,65 @@ public class main {
 
         System.out.println("\nRecuit simulé - Efficacité en temps");
         bp.OneItemPerBin();
+        System.out.println("Veuillez saisir la température initial:");
+        int initTemp = sc.nextInt();
+        System.out.println("Veuillez saisir le nombre de changement de température:");
+        int n1 = sc.nextInt();
+        System.out.println("Veuillez saisir le nombre de changement à une température:");
+        int n2 = sc.nextInt();
+
+        System.out.println("Veuillez saisir la μ : (mettre une virgule pas de point");
+        double mu = sc.nextDouble();
         debut = System.currentTimeMillis();
-        bp.RecuitSimule(140, 120, 100, 0.85);
+        bp.RecuitSimule(initTemp, n1, n2, mu);
         fin = System.currentTimeMillis() - debut;
         if (verbose)
             bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
-*/
+
 
         System.out.println("\nRecuit simulé - Efficacité en nb bins");
         somme = 0;
         for (int i = 0; i < nbRecuit; i++) {
             bp.OneItemPerBin();
-            bp.RecuitSimule(100, 50, 10, 0.85);
+            bp.RecuitSimule(initTemp, n1, n2, mu);
             System.out.println("nbbins = " + bp.nb_bin);
             somme += bp.nb_bin;
         }
         System.out.println("Nombre moyen de bins = " + (double) somme/nbRecuit);
 
-/*
+
         //------------     Tabou   ------------
 
         System.out.println("\nTabu Search -  Efficacité en temps");
         bp.OneItemPerBin();
+        System.out.println("Veuillez saisir la taille du tableau:");
+        int tabuSize = sc.nextInt();
+        System.out.println("Veuillez saisir le nombre d'itération':");
+        int nbIter = sc.nextInt();
+
         debut = System.currentTimeMillis();
-        bp.TabuSearch(10, TabuIter);
+        bp.TabuSearch(tabuSize, nbIter);
         fin = System.currentTimeMillis() - debut;
         if (verbose)
             bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
-*/
+
+
+        //------------   Solution Optimal   ------------
+
+        System.out.println("\nSolution optimal");
+        String[] file = {fileName};
+        try {
+            debut = System.currentTimeMillis();
+            BinPackingMip.main(file);
+            fin = System.currentTimeMillis() - debut;
+            System.out.println("\nL'optimisation du fichier " + fileName + " à durée " + fin+"ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        sc.close();
     }
 }

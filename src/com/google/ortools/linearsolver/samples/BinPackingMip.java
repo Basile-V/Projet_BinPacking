@@ -5,19 +5,44 @@ import com.google.ortools.linearsolver.MPObjective;
 import com.google.ortools.linearsolver.MPSolver;
 import com.google.ortools.linearsolver.MPVariable;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
 /** Bin packing problem. */
 public class BinPackingMip {
     static class DataModel {
-        // value of binpack1d_00.txt
-        public final double[] weights = {6, 6, 5, 5, 5, 4, 4, 4, 4, 2, 2, 2, 2, 3, 3, 7, 7, 5, 5, 8, 8, 4, 4, 5};
-        public final int numItems = weights.length;
-        public final int numBins = weights.length;
-        public final int binCapacity = 9;
+        public final double[] weights;
+        public final int numItems;
+        public final int numBins;
+        public final int binCapacity;
+
+        public DataModel(double[] weights, int binCapacity){
+            this.weights = weights;
+            this.numItems = weights.length;
+            this.numBins = weights.length;
+            this.binCapacity = binCapacity;
+        }
     }
 
     public static void main(String[] args) throws Exception {
         Loader.loadNativeLibraries();
-        final DataModel data = new DataModel();
+        File file = new File("files/binpack1d_00.txt");
+        if(args.length >= 1)
+            file = new File(args[0]);
+        BufferedReader reader;
+        reader = new BufferedReader(new FileReader(file));
+        String line;
+        int number = 0;
+        line = reader.readLine();
+        String[] header = line.split(" ");
+        int binCapacity = Integer.parseInt(header[0]);
+        double[] weight = new double[Integer.parseInt(header[1])];
+        while ((line = reader.readLine()) != null) {
+            weight[number++] = Double.parseDouble(line);
+        }
+        System.out.println(weight);
+        DataModel data = new DataModel(weight , binCapacity);
 
         // Create the linear solver with the SCIP backend.
         MPSolver solver = MPSolver.createSolver("SCIP");
