@@ -12,7 +12,6 @@ public class main {
         int somme;
         int nbFirstFitRandom = 100;
         int nbRecuit = 100;
-        int nbTabu = 10;
         Scanner sc = new Scanner(System.in);
         System.out.println("Veuillez saisir le nom du fichier avec l'extention:");
         String fileName = "files/" +sc.nextLine();
@@ -68,14 +67,14 @@ public class main {
 
         System.out.println("\nRecuit simulé - Efficacité en temps");
         bp.OneItemPerBin();
-        System.out.println("Veuillez saisir la température initial:");
+        System.out.println("Veuillez saisir la température initiale:");
         int initTemp = sc.nextInt();
         System.out.println("Veuillez saisir le nombre de changement de température:");
         int n1 = sc.nextInt();
         System.out.println("Veuillez saisir le nombre de changement à une température:");
         int n2 = sc.nextInt();
 
-        System.out.println("Veuillez saisir la μ : (mettre une virgule pas de point");
+        System.out.println("Veuillez saisir la μ : (mettre une virgule pas de point)");
         double mu = sc.nextDouble();
         debut = System.currentTimeMillis();
         bp.RecuitSimule(initTemp, n1, n2, mu);
@@ -103,7 +102,7 @@ public class main {
         bp.OneItemPerBin();
         System.out.println("Veuillez saisir la taille du tableau:");
         int tabuSize = sc.nextInt();
-        System.out.println("Veuillez saisir le nombre d'itération':");
+        System.out.println("Veuillez saisir le nombre d'itération:");
         int nbIter = sc.nextInt();
 
         debut = System.currentTimeMillis();
@@ -115,9 +114,9 @@ public class main {
         System.out.println("L'optimisation à durée " + fin+"ms");
 
 
-        //------------   Solution Optimal   ------------
+        //------------   Solution Optimale   ------------
 
-        System.out.println("\nSolution optimal");
+        System.out.println("\nSolution optimale");
         String[] file = {fileName};
         try {
             debut = System.currentTimeMillis();

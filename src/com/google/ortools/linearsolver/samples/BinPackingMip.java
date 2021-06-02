@@ -41,7 +41,6 @@ public class BinPackingMip {
         while ((line = reader.readLine()) != null) {
             weight[number++] = Double.parseDouble(line);
         }
-        System.out.println(weight);
         DataModel data = new DataModel(weight , binCapacity);
 
         // Create the linear solver with the SCIP backend.
