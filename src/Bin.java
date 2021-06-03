@@ -7,7 +7,7 @@ public class Bin implements Cloneable {
     boolean verbose;
     int id;
 
-    public Bin(int size, boolean verbose) {
+    public Bin(int size, boolean verbose, int id) {
         if (verbose)
             System.out.println("Creation d'un bin");
         this.bin_size = size;
@@ -16,7 +16,7 @@ public class Bin implements Cloneable {
         this.objects = new Item[size];
         this.nb_object = 0;
         this.verbose = verbose;
-        this.id = 0;
+        this.id = id;
     }
 
     public boolean addObject(Item item) {

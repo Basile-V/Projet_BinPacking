@@ -41,14 +41,14 @@ public class main {
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
 
-        System.out.println("\nFirst Fit Random - Efficacité en nb bins");
-        somme = 0;
-        for (int i = 0; i < nbFirstFitRandom; i++) {
-            bp.firstFit(2);
-            System.out.println("nbbins = " + bp.nb_bin);
-            somme += bp.nb_bin;
-        }
-        System.out.println("Nombre moyen de bins = " + (double) somme/nbFirstFitRandom);
+//        System.out.println("\nFirst Fit Random - Efficacité en nb bins");
+//        somme = 0;
+//        for (int i = 0; i < nbFirstFitRandom; i++) {
+//            bp.firstFit(2);
+//            System.out.println("nbbins = " + bp.nb_bin);
+//            somme += bp.nb_bin;
+//        }
+//        System.out.println("Nombre moyen de bins = " + (double) somme/nbFirstFitRandom);
 
 
         //------------     One item per bin   ------------
@@ -85,15 +85,15 @@ public class main {
         System.out.println("L'optimisation à durée " + fin+"ms");
 
 
-        System.out.println("\nRecuit simulé - Efficacité en nb bins");
-        somme = 0;
-        for (int i = 0; i < nbRecuit; i++) {
-            bp.OneItemPerBin();
-            bp.RecuitSimule(initTemp, n1, n2, mu);
-            System.out.println("nbbins = " + bp.nb_bin);
-            somme += bp.nb_bin;
-        }
-        System.out.println("Nombre moyen de bins = " + (double) somme/nbRecuit);
+//        System.out.println("\nRecuit simulé - Efficacité en nb bins");
+//        somme = 0;
+//        for (int i = 0; i < nbRecuit; i++) {
+//            bp.OneItemPerBin();
+//            bp.RecuitSimule(initTemp, n1, n2, mu);
+//            System.out.println("nbbins = " + bp.nb_bin);
+//            somme += bp.nb_bin;
+//        }
+//        System.out.println("Nombre moyen de bins = " + (double) somme/nbRecuit);
 
 
         //------------     Tabou   ------------
