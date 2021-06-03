@@ -1,10 +1,11 @@
 public class Bin implements Cloneable {
     int bin_size;
-    int[] objects;
+    Item[] objects;
     int remaining_space;
     int nb_object;
     boolean isFull;
     boolean verbose;
+    int id;
 
     public Bin(int size, boolean verbose) {
         if (verbose)
@@ -12,20 +13,21 @@ public class Bin implements Cloneable {
         this.bin_size = size;
         this.remaining_space = size;
         this.isFull = false;
-        this.objects = new int[size];
+        this.objects = new Item[size];
         this.nb_object = 0;
         this.verbose = verbose;
+        this.id = 0;
     }
 
-    public boolean addObject(int size) {
+    public boolean addObject(Item item) {
         if (this.verbose)
-            System.out.println("Ajout d'un objet de taille :" + size);
-        if (this.remaining_space >= size) {
-            this.objects[this.nb_object] = size;
+            System.out.println("Ajout d'un objet de taille :" + item.getWeight());
+        if (this.remaining_space >= item.getWeight()) {
+            this.objects[this.nb_object] = item;
             this.nb_object += 1;
             if (this.verbose)
                 System.out.println("Nombre d'objets :" + this.nb_object);
-            this.remaining_space -= size;
+            this.remaining_space -= item.getWeight();
             if (this.verbose)
                 System.out.println("Espace restant :" + this.remaining_space);
             if (this.remaining_space == 0)
@@ -39,13 +41,13 @@ public class Bin implements Cloneable {
         if (this.verbose)
             System.out.println("Suppression de l'objet");
         if (this.nb_object >= number) {
-            int removedObject = this.objects[number];
+            Item removedObject = this.objects[number];
             for (int i = number; i < nb_object; i++)
                 this.objects[i] = this.objects[i+1];
             this.nb_object -= 1;
             if (this.verbose)
                 System.out.println("Nombre d'objets :" + this.nb_object);
-            this.remaining_space += removedObject;
+            this.remaining_space += removedObject.getWeight();
             if (this.verbose)
                 System.out.println("Espace restant :" + this.remaining_space);
             if (this.remaining_space > 0)
@@ -53,5 +55,9 @@ public class Bin implements Cloneable {
             return true;
         } else
             return false;
+    }
+
+    public int getId(){
+        return this.id;
     }
 }
