@@ -46,7 +46,7 @@ public class Binpacking {
             if(total_data % this.bin_size != 0){
                 min_bin++;
             }
-            System.out.println("Nombre minimal de bin : " + min_bin);
+            System.out.println("Borne indérieure de bin : " + min_bin);
             this.min_nb_bin = min_bin;
         } catch (IOException e) {
             e.printStackTrace();
@@ -159,8 +159,8 @@ public class Binpacking {
             bestVoisinBin = this.cloneBins();
             for (int bin1 = 0; bin1 < nb_bin; bin1++) {
                 for (int bin2 = 0; bin2 < nb_bin; bin2++) {
-                    for (int item1 = 0; item1 < bins.get(bin1).nb_object; item1++) {
-                        idItem1 = this.bins.get(bin1).objects[item1].getWeight();
+                    for (int item1 = 0; item1 < bins.get(bin1).getnbObject(); item1++) {
+                        idItem1 = this.bins.get(bin1).getObjects().get(item1).getWeight();
                         idBin2 = this.bins.get(bin2).getId();
                         idBin1 = this.bins.get(bin1).getId();
                         acceptable = acceptable(T, idBin2, idBin1, idItem1);
@@ -180,9 +180,9 @@ public class Binpacking {
                         }
                         this.bins = cloneBins(currentX);
                         this.nb_bin = this.bins.size();
-                        for (int item2 = 0; item2 < bins.get(bin2).nb_object; item2++) {
+                        for (int item2 = 0; item2 < bins.get(bin2).getnbObject(); item2++) {
                             if(!(bin1 == bin2 && item1 == item2)){
-                                idItem2 = this.bins.get(bin2).objects[item2].getWeight();
+                                idItem2 = this.bins.get(bin2).getObjects().get(item2).getWeight();
                                 acceptable = acceptable(T, idBin1, idItem1, idBin2, idItem2);
                                 if (acceptable) {
                                     this.bins = cloneBins(currentX);
@@ -259,21 +259,21 @@ public class Binpacking {
     }
 
     public boolean relocate(int sourceBin, int itemNumber, int destinationBin) {
-        if (this.bins.get(sourceBin).nb_object <= itemNumber) {
+        if (this.bins.get(sourceBin).getnbObject() <= itemNumber) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas d'item " + itemNumber + " dans le bin " + sourceBin);
                 System.out.println("");
             }
             return false;
         }
-        if (this.bins.get(destinationBin).remaining_space < this.bins.get(sourceBin).objects[itemNumber].getWeight()) {
+        if (this.bins.get(destinationBin).remaining_space < this.bins.get(sourceBin).getObjects().get(itemNumber).getWeight()) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas de place suffisante dans le bin " + destinationBin);
                 System.out.println("");
             }
             return false;
         }
-        if (this.bins.get(destinationBin).addObject(this.bins.get(sourceBin).objects[itemNumber])) {
+        if (this.bins.get(destinationBin).addObject(this.bins.get(sourceBin).getObjects().get(itemNumber))) {
             this.bins.get(sourceBin).removeObject(itemNumber);
             clearEmptyBins();
             return true;
@@ -287,8 +287,8 @@ public class Binpacking {
         int square;
         for (int i = 0; i < this.nb_bin; i++) {
             square = 0;
-            for (int j = 0; j < this.bins.get(i).nb_object; j++)
-                square += this.bins.get(i).objects[j].getWeight();
+            for (int j = 0; j < this.bins.get(i).getnbObject(); j++)
+                square += this.bins.get(i).getObjects().get(j).getWeight();
             sum += Math.pow(square,2);
         }
         return sum;
@@ -299,8 +299,8 @@ public class Binpacking {
         int square;
         for (int i = 0; i < data.size(); i++) {
             square = 0;
-            for (int j = 0; j < data.get(i).nb_object; j++)
-                square += data.get(i).objects[j].getWeight();
+            for (int j = 0; j < data.get(i).getnbObject(); j++)
+                square += data.get(i).getObjects().get(j).getWeight();
             sum += Math.pow(square,2);
         }
         return sum;
@@ -310,37 +310,37 @@ public class Binpacking {
         if (sourceBin == destinationBin) {
             return false;
         }
-        if (this.bins.get(sourceBin).nb_object <= sourceItemNumber) {
+        if (this.bins.get(sourceBin).getnbObject() <= sourceItemNumber) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas d'item " + sourceItemNumber + " dans le bin " + sourceBin);
                 System.out.println("");
             }
             return false;
         }
-        if (this.bins.get(destinationBin).nb_object <= destinationItemNumber) {
+        if (this.bins.get(destinationBin).getnbObject() <= destinationItemNumber) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas d'item " + destinationItemNumber + " dans le bin " + destinationBin);
                 System.out.println("");
             }
             return false;
         }
-        if (this.bins.get(destinationBin).remaining_space + this.bins.get(destinationBin).objects[destinationItemNumber].getWeight() < this.bins.get(sourceBin).objects[sourceItemNumber].getWeight()) {
+        if (this.bins.get(destinationBin).remaining_space + this.bins.get(destinationBin).getObjects().get(destinationItemNumber).getWeight() < this.bins.get(sourceBin).getObjects().get(sourceItemNumber).getWeight()) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas de place suffisante dans le bin " + destinationBin);
                 System.out.println("");
             }
             return false;
         }
-        if (this.bins.get(sourceBin).remaining_space + this.bins.get(sourceBin).objects[sourceItemNumber].getWeight() < this.bins.get(destinationBin).objects[destinationItemNumber].getWeight()) {
+        if (this.bins.get(sourceBin).remaining_space + this.bins.get(sourceBin).getObjects().get(sourceItemNumber).getWeight() < this.bins.get(destinationBin).getObjects().get(destinationItemNumber).getWeight()) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas de place suffisante dans le bin " + destinationBin);
                 System.out.println("");
             }
             return false;
         }
-        Item item = this.bins.get(destinationBin).objects[destinationItemNumber];
+        Item item = this.bins.get(destinationBin).objects.get(destinationItemNumber);
         this.bins.get(destinationBin).removeObject(destinationItemNumber);
-        this.bins.get(destinationBin).addObject(this.bins.get(sourceBin).objects[sourceItemNumber]);
+        this.bins.get(destinationBin).addObject(this.bins.get(sourceBin).getObjects().get(sourceItemNumber));
         this.bins.get(sourceBin).removeObject(sourceItemNumber);
         this.bins.get(sourceBin).addObject(item);
         return  true;
@@ -351,8 +351,8 @@ public class Binpacking {
         for (int i = 0; i < this.nb_bin; i++) {
             System.out.println("");
             System.out.println("Bin " + (i+1) + " :");
-            for (int j = 0; j < this.bins.get(i).nb_object; j++){
-                System.out.println(this.bins.get(i).objects[j].getWeight());
+            for (int j = 0; j < this.bins.get(i).getnbObject(); j++){
+                System.out.println(this.bins.get(i).getObjects().get(j).getWeight());
                 somme++;
             }
         }
@@ -364,8 +364,8 @@ public class Binpacking {
         Bin bin;
         for (int i = 0; i < this.nb_bin; i++) {
             bin = new Bin(bin_size, verbose, this.bins.get(i).getId());
-            for (int j = 0; j < this.bins.get(i).nb_object; j++) {
-                bin.addObject(this.bins.get(i).objects[j]);
+            for (int j = 0; j < this.bins.get(i).getnbObject(); j++) {
+                bin.addObject(this.bins.get(i).getObjects().get(j));
             }
             copy.add(bin);
         }
@@ -377,8 +377,8 @@ public class Binpacking {
         Bin bin;
         for (int i = 0; i < bins.size(); i++) {
             bin = new Bin(bin_size, verbose, bins.get(i).getId());
-            for (int j = 0; j < bins.get(i).nb_object; j++) {
-                bin.addObject(bins.get(i).objects[j]);
+            for (int j = 0; j < bins.get(i).getnbObject(); j++) {
+                bin.addObject(bins.get(i).getObjects().get(j));
             }
             copy.add(bin);
         }
@@ -387,7 +387,7 @@ public class Binpacking {
 
     public void clearEmptyBins() {
         for (int i = 0; i < this.nb_bin; i++) {
-            if (this.bins.get(i).nb_object == 0) {
+            if (this.bins.get(i).getnbObject() == 0) {
                 this.nb_bin -= 1;
                 this.bins.remove(i);
             }
@@ -402,7 +402,7 @@ public class Binpacking {
         for (int i = 0; i < times; i++) {
             source = random.nextInt(this.nb_bin);
             destination = random.nextInt(this.nb_bin);
-            itemNumber = random.nextInt(this.bins.get(source).nb_object);
+            itemNumber = random.nextInt(this.bins.get(source).getnbObject());
             if (!relocate(source, itemNumber, destination) & this.verbose)
                 System.out.println("Echec de la relocation numéro "+ i);
         }
@@ -418,7 +418,7 @@ public class Binpacking {
         while (!reloc && nbTry++ < 10000) {
             source = random.nextInt(this.nb_bin);
             destination = random.nextInt(this.nb_bin);
-            itemNumber = random.nextInt(this.bins.get(source).nb_object);
+            itemNumber = random.nextInt(this.bins.get(source).getnbObject());
             if (relocate(source, itemNumber, destination))
                 reloc = true;
         }
@@ -433,8 +433,8 @@ public class Binpacking {
         for (int i = 0; i < times; i++) {
             source = random.nextInt(this.nb_bin);
             destination = random.nextInt(this.nb_bin);
-            sourceItemNumber = random.nextInt(this.bins.get(source).nb_object);
-            destinationItemNumber = random.nextInt(this.bins.get(destination).nb_object);
+            sourceItemNumber = random.nextInt(this.bins.get(source).getnbObject());
+            destinationItemNumber = random.nextInt(this.bins.get(destination).getnbObject());
             if (!exchange(source, sourceItemNumber, destination, destinationItemNumber) & this.verbose)
                 System.out.println("Echec de l'échange numéro "+ i);
         }
@@ -451,8 +451,8 @@ public class Binpacking {
         while (!exchange&& nbTry++ < 10000) {
             source = random.nextInt(this.nb_bin);
             destination = random.nextInt(this.nb_bin);
-            sourceItemNumber = random.nextInt(this.bins.get(source).nb_object);
-            destinationItemNumber = random.nextInt(this.bins.get(destination).nb_object);
+            sourceItemNumber = random.nextInt(this.bins.get(source).getnbObject());
+            destinationItemNumber = random.nextInt(this.bins.get(destination).getnbObject());
             if (exchange(source, sourceItemNumber, destination, destinationItemNumber))
                 exchange = true;
         }

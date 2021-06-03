@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bin implements Cloneable {
     int bin_size;
-    Item[] objects;
+    List<Item> objects;
     int remaining_space;
-    int nb_object;
     boolean isFull;
     boolean verbose;
     int id;
@@ -13,8 +15,7 @@ public class Bin implements Cloneable {
         this.bin_size = size;
         this.remaining_space = size;
         this.isFull = false;
-        this.objects = new Item[size];
-        this.nb_object = 0;
+        this.objects = new ArrayList<Item>();
         this.verbose = verbose;
         this.id = id;
     }
@@ -22,42 +23,71 @@ public class Bin implements Cloneable {
     public boolean addObject(Item item) {
         if (this.verbose)
             System.out.println("Ajout d'un objet de taille :" + item.getWeight());
-        if (this.remaining_space >= item.getWeight()) {
-            this.objects[this.nb_object] = item;
-            this.nb_object += 1;
+        if (this.getRemainingSpace() >= item.getWeight()) {
+            this.objects.add(item);
             if (this.verbose)
-                System.out.println("Nombre d'objets :" + this.nb_object);
+                System.out.println("Nombre d'objets :" + this.getnbObject());
             this.remaining_space -= item.getWeight();
             if (this.verbose)
                 System.out.println("Espace restant :" + this.remaining_space);
-            if (this.remaining_space == 0)
+            if (this.getRemainingSpace() == 0)
                 this.isFull = true;
             return true;
         } else
             return false;
     }
 
-    public boolean removeObject(int number) {
+    public boolean removeObject(Item item) {
         if (this.verbose)
             System.out.println("Suppression de l'objet");
-        if (this.nb_object >= number) {
-            Item removedObject = this.objects[number];
-            for (int i = number; i < nb_object; i++)
-                this.objects[i] = this.objects[i+1];
-            this.nb_object -= 1;
+        if(this.getObjects().contains(item)){
+            this.objects.remove(item);
+            this.remaining_space += item.getWeight();
             if (this.verbose)
-                System.out.println("Nombre d'objets :" + this.nb_object);
-            this.remaining_space += removedObject.getWeight();
+                System.out.println("Nombre d'objets :" + this.getnbObject());
             if (this.verbose)
                 System.out.println("Espace restant :" + this.remaining_space);
             if (this.remaining_space > 0)
                 this.isFull = false;
             return true;
-        } else
+        }
+        else {
             return false;
+        }
+    }
+
+    public boolean removeObject(int item) {
+        if (this.verbose)
+            System.out.println("Suppression de l'objet");
+        if(this.getObjects().size() > item){
+            this.remaining_space += this.getObjects().get(item).getWeight();
+            this.objects.remove(item);
+            if (this.verbose)
+                System.out.println("Nombre d'objets :" + this.getnbObject());
+            if (this.verbose)
+                System.out.println("Espace restant :" + this.remaining_space);
+            if (this.remaining_space > 0)
+                this.isFull = false;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public int getId(){
         return this.id;
+    }
+
+    public int getRemainingSpace(){
+        return this.remaining_space;
+    }
+
+    public int getnbObject(){
+        return this.getObjects().size();
+    }
+
+    public List<Item> getObjects(){
+        return this.objects;
     }
 }
