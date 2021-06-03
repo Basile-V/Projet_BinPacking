@@ -60,7 +60,7 @@ public class Binpacking {
         if (order == 2)
             Collections.shuffle(this.data);
 
-        for(var i = data.size() -1; i >=0; i--) {
+        for(var i = 0; i < this.data.size(); i++) {
             boolean ajout = false;
             if (this.verbose) {
                 System.out.println("");
