@@ -96,36 +96,32 @@ public class Binpacking {
         int delta;
         int bestScore = objectiveFunction();
         int newScore;
-        List<Bin> y;
+        int fxi;
         List<Bin> xi;
         Random random = new Random();
         int choice;
         List<Bin> bestBin = new ArrayList<>(this.bins);
         for (int k = 0; k < n1; k++){
             for(int l = 1; l < n2; l++){
-                xi = new ArrayList<>(this.bins);
+                fxi = objectiveFunction();
+                xi = cloneBins();
                 choice = random.nextInt(2);
                 if(choice == 0){
                     this.relocateLoop();
                 }else {
                     this.exchangeLoop();
                 }
-                y = new ArrayList<>(this.bins);
                 newScore = objectiveFunction();
-                delta = newScore - objectiveFunction();
+                delta = newScore - fxi;
                 if(delta >= 0){
-                    this.bins = y;
                     if(newScore > bestScore){
-                        bestBin = y;
+                        bestBin = cloneBins();
                         bestScore = newScore;
                     }
                 }
                 else{
                     p = random.nextFloat();
-                    if(p <= Math.exp((-delta) / tk)){
-                        this.bins = y;
-                    }
-                    else {
+                    if(p < Math.exp((-delta) / tk)){
                         this.bins = xi;
                     }
                 }
@@ -239,7 +235,7 @@ public class Binpacking {
 
     public boolean acceptable(List<List<Integer>> T, int bin1, int bin2, int item) {
         List<Integer> aled = new ArrayList<Integer>(Arrays.asList(bin1, bin2, item));
-        return !T.contains(aled);
+        return !(T.contains(aled) || bin1 == bin2);
     }
 
     public boolean acceptable(List<List<Integer>> T, int bin1, int item1, int bin2, int item2) {
@@ -259,6 +255,9 @@ public class Binpacking {
     }
 
     public boolean relocate(int sourceBin, int itemNumber, int destinationBin) {
+        if(sourceBin == destinationBin){
+            return false;
+        }
         if (this.bins.get(sourceBin).getnbObject() <= itemNumber) {
             if (this.verbose) {
                 System.out.println("Il n'y a pas d'item " + itemNumber + " dans le bin " + sourceBin);
@@ -289,18 +288,6 @@ public class Binpacking {
             square = 0;
             for (int j = 0; j < this.bins.get(i).getnbObject(); j++)
                 square += this.bins.get(i).getObjects().get(j).getWeight();
-            sum += Math.pow(square,2);
-        }
-        return sum;
-    }
-
-    public int objectiveFunction (List<Bin> data){
-        int sum = 0;
-        int square;
-        for (int i = 0; i < data.size(); i++) {
-            square = 0;
-            for (int j = 0; j < data.get(i).getnbObject(); j++)
-                square += data.get(i).getObjects().get(j).getWeight();
             sum += Math.pow(square,2);
         }
         return sum;
@@ -415,7 +402,7 @@ public class Binpacking {
         int source;
         int destination;
         int itemNumber;
-        while (!reloc && nbTry++ < 10000) {
+        while (!reloc && nbTry++ < 100000) {
             source = random.nextInt(this.nb_bin);
             destination = random.nextInt(this.nb_bin);
             itemNumber = random.nextInt(this.bins.get(source).getnbObject());
