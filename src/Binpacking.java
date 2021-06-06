@@ -391,7 +391,7 @@ public class Binpacking {
         int source;
         int destination;
         int itemNumber;
-        while (!reloc && nbTry++ < 100000) {
+        while (!reloc && nbTry++ < 10000) {
             source = random.nextInt(this.nb_bin);
             destination = random.nextInt(this.nb_bin);
             itemNumber = random.nextInt(this.bins.get(source).getnbObject());
