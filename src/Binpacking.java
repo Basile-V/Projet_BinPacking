@@ -59,7 +59,6 @@ public class Binpacking {
             Collections.sort(data, new CompareWeight());
         if (order == 2)
             Collections.shuffle(this.data);
-
         for(var i = 0; i < this.data.size(); i++) {
             boolean ajout = false;
             if (this.verbose) {
@@ -218,13 +217,17 @@ public class Binpacking {
         }
     }
 
-    public void OneItemPerBin() {
+    public void OneItemPerBin(int order) {
         clearBins();
+        if (order == 1)
+            Collections.sort(data, new CompareWeight());
+        if (order == 2)
+            Collections.shuffle(this.data);
         for (var i = 0; i < this.data.size() ; i++) {
             if (this.verbose) {
                 System.out.println("");
                 System.out.println("i : " + i);
-                System.out.println("Nouvel objet de taille " + this.data.get(i));
+                System.out.println("Nouvel objet de taille " + this.data.get(i).getWeight());
             }
             addBin(i);
             this.bins.get(i).addObject(this.data.get(i));
@@ -381,20 +384,6 @@ public class Binpacking {
         }
     }
 
-    public void relocateLoop(int times) {
-        int source;
-        int destination;
-        Random random = new Random();
-        int itemNumber;
-        for (int i = 0; i < times; i++) {
-            source = random.nextInt(this.nb_bin);
-            destination = random.nextInt(this.nb_bin);
-            itemNumber = random.nextInt(this.bins.get(source).getnbObject());
-            if (!relocate(source, itemNumber, destination) & this.verbose)
-                System.out.println("Echec de la relocation numéro "+ i);
-        }
-    }
-
     public void relocateLoop() {
         boolean reloc = false;
         int nbTry = 0;
@@ -408,22 +397,6 @@ public class Binpacking {
             itemNumber = random.nextInt(this.bins.get(source).getnbObject());
             if (relocate(source, itemNumber, destination))
                 reloc = true;
-        }
-    }
-
-    public void exchangeLoop(int times) {
-        Random random = new Random();
-        int source;
-        int destination;
-        int sourceItemNumber;
-        int destinationItemNumber;
-        for (int i = 0; i < times; i++) {
-            source = random.nextInt(this.nb_bin);
-            destination = random.nextInt(this.nb_bin);
-            sourceItemNumber = random.nextInt(this.bins.get(source).getnbObject());
-            destinationItemNumber = random.nextInt(this.bins.get(destination).getnbObject());
-            if (!exchange(source, sourceItemNumber, destination, destinationItemNumber) & this.verbose)
-                System.out.println("Echec de l'échange numéro "+ i);
         }
     }
 
