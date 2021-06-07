@@ -98,7 +98,7 @@ public class main {
 
         System.out.println("Veuillez saisir la μ : (mettre une virgule pas de point)");
         double mu = sc.nextDouble();
-        System.out.println("Algo en train de tourner");
+        System.out.println("l'algo est en train de tourner");
         debut = System.currentTimeMillis();
         bp.RecuitSimule(initTemp, n1, n2, mu);
         fin = System.currentTimeMillis() - debut;
@@ -144,7 +144,7 @@ public class main {
         int tabuSize = sc.nextInt();
         System.out.println("Veuillez saisir le nombre d'itération:");
         int nbIter = sc.nextInt();
-        System.out.println("Algo en train de tourner");
+        System.out.println("l'algo est en train de tourner");
         debut = System.currentTimeMillis();
         bp.TabuSearch(tabuSize, nbIter);
         fin = System.currentTimeMillis() - debut;
