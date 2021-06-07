@@ -28,8 +28,7 @@ public class main {
         debut = System.currentTimeMillis();
         bp.firstFit(1);
         fin = System.currentTimeMillis() - debut;
-        if (verbose)
-            bp.printBins();
+        bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
 
@@ -40,8 +39,7 @@ public class main {
         debut = System.currentTimeMillis();
         bp.firstFit(2);
         fin = System.currentTimeMillis() - debut;
-        if (verbose)
-            bp.printBins();
+        bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
 
@@ -61,8 +59,7 @@ public class main {
         debut = System.currentTimeMillis();
         bp.OneItemPerBin(1);
         fin = System.currentTimeMillis() - debut;
-        if (verbose)
-            bp.printBins();
+        bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
 
@@ -102,8 +99,7 @@ public class main {
         debut = System.currentTimeMillis();
         bp.RecuitSimule(initTemp, n1, n2, mu);
         fin = System.currentTimeMillis() - debut;
-        if (verbose)
-            bp.printBins();
+        bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin+"ms");
 
@@ -148,8 +144,7 @@ public class main {
         debut = System.currentTimeMillis();
         bp.TabuSearch(tabuSize, nbIter);
         fin = System.currentTimeMillis() - debut;
-        if (verbose)
-            bp.printBins();
+        bp.printBins();
         System.out.println("nbbins = " + bp.nb_bin);
         System.out.println("L'optimisation à durée " + fin + "ms");
 
